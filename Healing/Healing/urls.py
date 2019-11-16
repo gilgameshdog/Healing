@@ -14,10 +14,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.static import serve
+from django.contrib.auth.decorators import login_required
+from blog.views import base,mantenedor
+from blog.usuarios.views import Login,logoutUsuario
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
+    path('accounts/login/',Login.as_view(), name = 'login'),
+    path('logout/',login_required(logoutUsuario),name = 'logout'),
+    path('mantenedor/',login_required(mantenedor), name= 'mantenedor'),
+    path('', include(('blog.urls','blog'))),
+    path('',base, name= 'inicio'),
+    path('reset/password_reset', PasswordResetView.as_view(template_name='blog/registration/password_reset_form.html', email_template_name="blog/registration/password_reset_email.html"), name = 'password_reset'),
+    path('reset/password_reset_done', PasswordResetDoneView.as_view(template_name='blog/registration/password_reset_done.html'), name = 'password_reset_done'),
+    re_path(r'^reset/(?P<uidb64>[0-9A-za-z_\-]+)/(?P<token>.+)/$', PasswordResetConfirmView.as_view(template_name='blog/registration/password_reset_confirm.html'), name = 'password_reset_confirm'),
+    path('reset/done',PasswordResetCompleteView.as_view(template_name='blog/registration/password_reset_complete.html') , name = 'password_reset_complete'),
+
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
