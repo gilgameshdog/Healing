@@ -28,7 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'blog.usuarios',
     'import_export',
     'ckeditor',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +74,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Healing.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -104,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#Configuracion de ckeditor
+# Configuracion de ckeditor
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
